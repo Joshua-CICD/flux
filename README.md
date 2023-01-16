@@ -5,7 +5,7 @@ This flux repo automates the deployment of containers
 Note-to-self: Bootstrap may fail, ensure that egress traffic is reachable from within the cluster.
 ```
 
-# https://fluxcd.io/flux/installation/#github-and-github-enterprise
+# [Installation Instructions](https://fluxcd.io/flux/installation/#github-and-github-enterprise)
 
 flux bootstrap github \
   --owner=Joshua-CICD \
