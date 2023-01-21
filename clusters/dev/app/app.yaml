@@ -79,7 +79,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: app
+  name: frontend
   namespace: default
   annotations:
     alb.ingress.kubernetes.io/scheme: internet-facing
@@ -93,6 +93,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: app
+                name: frontend
                 port:
                   number: 80
