@@ -60,7 +60,7 @@ spec:
         - containerPort: 3001
         env:
           - name: API_ENDPOINT
-            value: "http://service-name.namespace.svc:5000"
+            value: "http://backend.namespace.svc:5000"
 ---
 apiVersion: v1
 kind: Service
