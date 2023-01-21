@@ -2,36 +2,76 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app
+  name: backend
   namespace: default
 spec:
   selector:
     matchLabels:
-      app: app
+      app: backend
   replicas: 1
   template:
     metadata:
       labels:
-        app: app
+        app: backend
     spec:
       imagePullSecrets:
         - name: ecr-image-pull-secret
       containers:
-      - image: 382942022480.dkr.ecr.us-east-1.amazonaws.com/backend-dev:a65bd44783570e5babec5aedd0da87c3cfb89c2b
-        name: app
+      - image: 382942022480.dkr.ecr.us-east-1.amazonaws.com/backend-dev:6711de2f55268fedac3217e8162fe5eec174cc59
+        name: backend
         ports:
         - containerPort: 5000
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: app
+  name: backend
   namespace: default
 spec:
   ports:
-  - port: 80
+  - port: 5000
     protocol: TCP
     targetPort: 5000
   type: ClusterIP
   selector:
-    app: app
+    app: backend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      imagePullSecrets:
+        - name: ecr-image-pull-secret
+      containers:
+      - image: 382942022480.dkr.ecr.us-east-1.amazonaws.com/frontend-dev:7985561368690ae1dec1855b9c14ad80348bc64d
+        name: frontend
+        ports:
+        - containerPort: 3001
+        env:
+          - name: API_ENDPOINT
+            value: "http://service-name.namespace.svc:5000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: default
+spec:
+  ports:
+  - port: 3001
+    protocol: TCP
+    targetPort: 3001
+  type: ClusterIP
+  selector:
+    app: frontend
