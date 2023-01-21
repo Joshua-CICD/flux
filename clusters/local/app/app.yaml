@@ -15,7 +15,7 @@ spec:
         app: app
     spec:
       containers:
-      - image: docker.io/library/backend:local
+      - image: 382942022480.dkr.ecr.us-east-1.amazonaws.com/backend-dev:a65bd44783570e5babec5aedd0da87c3cfb89c2b
         name: app
         ports:
         - containerPort: 5000
