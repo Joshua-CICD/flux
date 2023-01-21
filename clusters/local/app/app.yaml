@@ -54,7 +54,7 @@ spec:
       imagePullSecrets:
         - name: ecr-image-pull-secret
       containers:
-      - image: 382942022480.dkr.ecr.us-east-1.amazonaws.com/frontend-dev:7985561368690ae1dec1855b9c14ad80348bc64d
+      - image: 382942022480.dkr.ecr.us-east-1.amazonaws.com/frontend-dev:8846a1e102fae0d79dd303c9e1c959c7f0602fb4
         name: frontend
         ports:
         - containerPort: 3001
