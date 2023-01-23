@@ -1,0 +1,92 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test
+  namespace: test
+spec:
+  selector:
+    matchLabels:
+      app: test
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      imagePullSecrets:
+        - name: ecr-image-pull-secret
+      containers:
+      - image: 382942022480.dkr.ecr.us-east-1.amazonaws.com/test:aaef9114a971ef96515632fa552803d1c2782634
+        name: test
+        ports:
+        - name: testport
+          containerPort: 5001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test
+  namespace: test
+spec:
+  ports:
+  - port: 5001
+    protocol: TCP
+    targetPort: testport
+  type: ClusterIP
+  selector:
+    app: test
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-postgres-service
+  namespace: test
+spec:
+  selector:
+    app: test-postgres
+  ports:
+    - name: test-postgres
+      port: 5432
+  clusterIP: None
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-postgres
+  namespace: test
+spec:
+  selector:
+    matchLabels:
+      app: test-postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: test-postgres
+    spec:
+      containers:
+        - name: test-postgres
+          image: postgres:12.4
+          env:
+            - name: POSTGRES_USER
+              value: admin
+            - name: POSTGRES_PASSWORD
+              value: password
+            - name: POSTGRES_DB
+              value: postgres
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: test-postgres-data
+              mountPath: /var/lib/test/postgresql/data
+      volumes:
+        - name: test-postgres-data
+          persistentVolumeClaim:
+            claimName: test-postgres-data
