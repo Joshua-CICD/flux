@@ -1,0 +1,4 @@
+creation_rules:
+  - path_regex: .*\.ya?ml$
+    encrypted_regex: '^(data|stringData)$'
+    pgp: 6DD6358C4138D0EAEA97EEAA763AF0BB72E8C775
