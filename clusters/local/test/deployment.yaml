@@ -88,5 +88,4 @@ spec:
               mountPath: /var/lib/test/postgresql/data
       volumes:
         - name: test-postgres-data
-          persistentVolumeClaim:
-            claimName: test-postgres-data
+          emptyDir: {}
