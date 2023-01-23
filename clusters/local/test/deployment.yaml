@@ -111,7 +111,7 @@ spec:
       - image: 382942022480.dkr.ecr.us-east-1.amazonaws.com/notifications:9978f799a32046d4f90dd7a7ae6b09dacbf491f5
         name: notifications
         ports:
-        - name: notificationsport
+        - name: notifiport
           containerPort: 5001
 ---
 apiVersion: v1
@@ -123,7 +123,7 @@ spec:
   ports:
   - port: 5001
     protocol: TCP
-    targetPort: notificationsport
+    targetPort: notifiport
   type: ClusterIP
   selector:
     app: notifications
