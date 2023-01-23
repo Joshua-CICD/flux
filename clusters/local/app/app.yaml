@@ -20,7 +20,7 @@ spec:
       - image: 382942022480.dkr.ecr.us-east-1.amazonaws.com/backend-dev:6711de2f55268fedac3217e8162fe5eec174cc59
         name: backend
         ports:
-        - name: backendPort
+        - name: backendport
           containerPort: 5000
 ---
 apiVersion: v1
@@ -32,7 +32,7 @@ spec:
   ports:
   - port: 5000
     protocol: TCP
-    targetPort: backendPort
+    targetPort: backendport
   type: ClusterIP
   selector:
     app: backend
@@ -58,7 +58,7 @@ spec:
       - image: 382942022480.dkr.ecr.us-east-1.amazonaws.com/frontend-dev:8846a1e102fae0d79dd303c9e1c959c7f0602fb4
         name: frontend
         ports:
-        - name: frontendPort
+        - name: frontendport
           containerPort: 3001
         env:
           - name: API_ENDPOINT
@@ -73,7 +73,7 @@ spec:
   ports:
   - port: 3001
     protocol: TCP
-    targetPort: frontendPort
+    targetPort: frontendport
   type: ClusterIP
   selector:
     app: frontend
