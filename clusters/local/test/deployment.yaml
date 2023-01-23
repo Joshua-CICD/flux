@@ -1,0 +1,301 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: test
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loan
+  namespace: test
+spec:
+  selector:
+    matchLabels:
+      app: loan
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: loan
+    spec:
+      imagePullSecrets:
+        - name: ecr-image-pull-secret
+      containers:
+      - image: 382942022480.dkr.ecr.us-east-1.amazonaws.com/loan:93d8ba8da0085cf69c39f351c2c5c35c779e6dc1
+        name: loan
+        ports:
+        - name: loanport
+          containerPort: 5001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loan
+  namespace: test
+spec:
+  ports:
+  - port: 5001
+    protocol: TCP
+    targetPort: loanport
+  type: ClusterIP
+  selector:
+    app: loan
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loan-postgres-service
+  namespace: test
+spec:
+  selector:
+    app: loan-postgres
+  ports:
+    - name: loan-postgres
+      port: 5432
+  clusterIP: None
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loan-postgres
+  namespace: test
+spec:
+  selector:
+    matchLabels:
+      app: loan-postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: loan-postgres
+    spec:
+      containers:
+        - name: loan-postgres
+          image: postgres:12.4
+          env:
+            - name: POSTGRES_USER
+              value: admin
+            - name: POSTGRES_PASSWORD
+              value: password
+            - name: POSTGRES_DB
+              value: postgres
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: loan-postgres-data
+              mountPath: /var/lib/loan/postgresql/data
+      volumes:
+        - name: loan-postgres-data
+          emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notifications
+  namespace: test
+spec:
+  selector:
+    matchLabels:
+      app: notifications
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: notifications
+    spec:
+      imagePullSecrets:
+        - name: ecr-image-pull-secret
+      containers:
+      - image: 382942022480.dkr.ecr.us-east-1.amazonaws.com/notifications:9978f799a32046d4f90dd7a7ae6b09dacbf491f5
+        name: notifications
+        ports:
+        - name: notificationsport
+          containerPort: 5001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: notifications
+  namespace: test
+spec:
+  ports:
+  - port: 5001
+    protocol: TCP
+    targetPort: notificationsport
+  type: ClusterIP
+  selector:
+    app: notifications
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalogue
+  namespace: test
+spec:
+  selector:
+    matchLabels:
+      app: catalogue
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: catalogue
+    spec:
+      imagePullSecrets:
+        - name: ecr-image-pull-secret
+      containers:
+      - image: 382942022480.dkr.ecr.us-east-1.amazonaws.com/catalogue:3a2d8529f0740b643ad19b78ef2455d67d23d9ef
+        name: catalogue
+        ports:
+        - name: catalogueport
+          containerPort: 5001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalogue
+  namespace: test
+spec:
+  ports:
+  - port: 5001
+    protocol: TCP
+    targetPort: catalogueport
+  type: ClusterIP
+  selector:
+    app: catalogue
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalogue-postgres-service
+  namespace: test
+spec:
+  selector:
+    app: catalogue-postgres
+  ports:
+    - name: catalogue-postgres
+      port: 5432
+  clusterIP: None
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalogue-postgres
+  namespace: test
+spec:
+  selector:
+    matchLabels:
+      app: catalogue-postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: catalogue-postgres
+    spec:
+      containers:
+        - name: catalogue-postgres
+          image: postgres:12.4
+          env:
+            - name: POSTGRES_USER
+              value: admin
+            - name: POSTGRES_PASSWORD
+              value: password
+            - name: POSTGRES_DB
+              value: postgres
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: catalogue-postgres-data
+              mountPath: /var/lib/catalogue/postgresql/data
+      volumes:
+        - name: catalogue-postgres-data
+          emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: member
+  namespace: test
+spec:
+  selector:
+    matchLabels:
+      app: member
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: member
+    spec:
+      imagePullSecrets:
+        - name: ecr-image-pull-secret
+      containers:
+      - image: 382942022480.dkr.ecr.us-east-1.amazonaws.com/member:7f98b7be27c572f527444224390068f9eef279c3
+        name: member
+        ports:
+        - name: memberport
+          containerPort: 5001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: member
+  namespace: test
+spec:
+  ports:
+  - port: 5001
+    protocol: TCP
+    targetPort: memberport
+  type: ClusterIP
+  selector:
+    app: member
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: member-postgres-service
+  namespace: test
+spec:
+  selector:
+    app: member-postgres
+  ports:
+    - name: member-postgres
+      port: 5432
+  clusterIP: None
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: member-postgres
+  namespace: test
+spec:
+  selector:
+    matchLabels:
+      app: member-postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: member-postgres
+    spec:
+      containers:
+        - name: member-postgres
+          image: postgres:12.4
+          env:
+            - name: POSTGRES_USER
+              value: admin
+            - name: POSTGRES_PASSWORD
+              value: password
+            - name: POSTGRES_DB
+              value: postgres
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: member-postgres-data
+              mountPath: /var/lib/member/postgresql/data
+      volumes:
+        - name: member-postgres-data
+          emptyDir: {}
